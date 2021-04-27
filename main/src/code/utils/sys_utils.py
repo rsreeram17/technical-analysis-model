@@ -13,7 +13,7 @@ class ConfigClass(object):
     def get(self, key):
         return reduce_get(self.cfg, key)
 
-def read_config(config_name: str, root_path="") -> ConfigClass:
+def read_config(config_name: str, root_path="../../../..") -> ConfigClass:
 
     yaml_file_name = "{}.yaml".format(config_name)
     opj = os.path.join

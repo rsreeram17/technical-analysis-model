@@ -2,14 +2,14 @@ import pandas as pd
 import os
 from main.src.code.utils.fmp_python.fmp import FMP
 from main.src.code.utils.sys_utils import read_config
-from main.src.code.utils.utils import identify_os, extract_folder_path, get_yaml_value
+from main.src.code.utils.utils import extract_folder_path, get_yaml_value
 
 def extract_tickers():
 
     opj = os.path.join
     op_file_path = opj(extract_folder_path('FMP_company_details'), "symbols.csv")
 
-    fmp = FMP(api_key=get_api_key(), output_format='pandas')
+    fmp = FMP(api_key= get_yaml_value('API', 'api_info.api_key'), output_format='pandas')
     symbols = fmp.get_symbols_list()
     symbols.to_csv(op_file_path)
 
@@ -41,7 +41,7 @@ class ExtractDailyPrice(object):
             stock_exchanges = get_yaml_value('API', 'country_exchanges' + "." + self.country)
             self.ticker_list = list(symbols[symbols['exchange'].isin(stock_exchanges)]["symbol"])
 
-            self.ticker_list = ["AAPL", "MSFT"] # Remove this after testing
+            self.ticker_list = self.ticker_list[200:250] # Remove this after testing
 
     def extract_daily_price(self):
 

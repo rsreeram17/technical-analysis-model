@@ -1,0 +1,5 @@
+extraction_flags:
+  country: US
+  symbols: no # Flag to run symbols extraction
+  type: history # history, previous, limited_history
+  ticker_list: all

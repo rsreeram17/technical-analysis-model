@@ -15,21 +15,7 @@ extraction_type = get_yaml_value('extraction', 'extraction_flags.type')
 
 ticker_list = get_yaml_value('extraction', 'extraction_flags.ticker_list')
 
-if ticker_list != 'all':
-    ticker_list = ['AAPL'] # Change this while implementing this
 
-else:
-
-    symbols = pd.read_csv(opj(extract_folder_path('FMP_company_details'), "symbols.csv"))
-
-    stock_exchanges = get_yaml_value('API', 'country_exchanges'+"."+country)
-    ticker_list = list(symbols[symbols['exchange'].isin(stock_exchanges)]["symbol"])
-
-    ticker_list = ["AAPL","MSFT"]
-
-fmp = FMP(api_key=api_key, output_format='pandas')
-
-for ticker in ticker_list:
 
 
 

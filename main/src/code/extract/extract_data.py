@@ -3,7 +3,7 @@ import os
 from main.src.code.utils.fmp_python.fmp import FMP
 from main.src.code.utils.sys_utils import read_config
 from main.src.code.utils.utils import extract_folder_path, get_yaml_value
-
+from tqdm import tqdm
 def extract_tickers():
 
     opj = os.path.join
@@ -41,7 +41,7 @@ class ExtractDailyPrice(object):
             stock_exchanges = get_yaml_value('API', 'country_exchanges' + "." + self.country)
             self.ticker_list = list(symbols[symbols['exchange'].isin(stock_exchanges)]["symbol"])
 
-            self.ticker_list = self.ticker_list[200:250] # Remove this after testing
+            self.ticker_list = self.ticker_list[460:700] # Remove this after testing
 
     def extract_daily_price(self):
 
@@ -49,7 +49,7 @@ class ExtractDailyPrice(object):
         fmp = FMP(api_key=self.api_key, output_format="pandas")
 
         if self.extraction_type == "history":
-            for ticker in self.ticker_list:
+            for ticker in tqdm(self.ticker_list):
                 data = fmp.get_historical_price(ticker)
                 write_file_path = opj(self.data_path, ticker+".csv")
                 data.to_csv(write_file_path)

@@ -2,7 +2,8 @@ windows:
   input: main\data\input\
   output: main\data\output\
   FMP_company_details: main\data\input\FMP_API_data\company_details\
-  daily_price: main\data\input\FMP_API_data\daily_price
+  daily_price: main\data\input\FMP_API_data\daily_price\
+  process_daily_price: main\data\output\FMP_API_data\daily_price\
 
 linux:
   input: main/data/input/

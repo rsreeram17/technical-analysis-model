@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from main.src.code.utils.fmp_python.fmp import FMP
 from main.src.code.utils.sys_utils import read_config
-from main.src.code.utils.utils import extract_folder_path, get_yaml_value
+from main.src.code.utils.utils import extract_folder_path, get_yaml_value, cache_info
 from tqdm import tqdm
 def extract_tickers():
 
@@ -11,7 +11,7 @@ def extract_tickers():
 
     fmp = FMP(api_key= get_yaml_value('API', 'api_info.api_key'), output_format='pandas')
     symbols = fmp.get_symbols_list()
-    symbols.to_csv(op_file_path)
+    symbols.to_csv(op_file_path, index=False)
 
     return
 
@@ -41,7 +41,7 @@ class ExtractDailyPrice(object):
             stock_exchanges = get_yaml_value('API', 'country_exchanges' + "." + self.country)
             self.ticker_list = list(symbols[symbols['exchange'].isin(stock_exchanges)]["symbol"])
 
-            self.ticker_list = self.ticker_list[460:700] # Remove this after testing
+            self.ticker_list = self.ticker_list[1180:1181] # Remove this after testing
 
     def extract_daily_price(self):
 
@@ -51,8 +51,11 @@ class ExtractDailyPrice(object):
         if self.extraction_type == "history":
             for ticker in tqdm(self.ticker_list):
                 data = fmp.get_historical_price(ticker)
+                daily_price_columns = list(data.columns)
                 write_file_path = opj(self.data_path, ticker+".csv")
-                data.to_csv(write_file_path)
+                data.to_csv(write_file_path, index=False)
+
+            cache_info("variables_info.json", "daily_price_data_columns", daily_price_columns)
 
 
 extract_data = ExtractDailyPrice()

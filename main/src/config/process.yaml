@@ -1,9 +1,21 @@
-processing_flags:
+TI_processing_flags:
   country: US
-  ticker_list: all # All the tickers present in the folder
+  ticker_list: ["HTH"] # All the tickers present in the folder
   history: all # Change this to number of days as per requirement
 
+
+variable_names:
+  date: 'date'
+  open: 'open'
+  high: 'high'
+  low: 'low'
+  close: 'close'
+  adj_close: 'adjClose'
+  volume: 'volume'
+  unadjusted_volume: 'unadjustedVolume'
+
 technical_indicator_inputs:
+  column: close
   package: pandas-ta
   available_strategies: None # ['candles', 'cycles', 'momentum', 'performance', 'statistics', 'trend', 'volatility', 'volume']
   indicators_details: [{"kind": "sma", "length": 20},
@@ -15,15 +27,30 @@ technical_indicator_inputs:
                        {"kind": "adosc"},
                        {"kind": "cci"},
                        {"kind": "mom", "length": 10}]
-variable_names:
-  date: 'date'
-  open: 'open'
-  high: 'high'
-  low: 'low'
-  close: 'close'
-  adj_close: 'adjClose'
-  volume: 'volume'
-  unadjusted_volume: 'unadjustedVolume'
+
+FC_processing_flags:
+  country: US
+  ticker_list: ["HTH"]
+
+feature_creation_inputs:
+  normalization_method: average
+  normalization_tf: 45 #Enter number of days
+  create_det_trend_signals: yes
+  remove_correlated_variables: no
+  historic_datapoint_for_pred: 45
+  time_ahead_to_pred: 7
+  raw_columns_analysis: ["close", "volume", "changePercent", "vwap", "changeOverTime"]
+
+
+
+
+
+
+
+
+
+
+
 
 
 

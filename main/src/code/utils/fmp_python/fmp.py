@@ -55,14 +55,14 @@ class FMP(object):
             hc = self.__do_request__(rb.compile_request())
             return hc
         else:
-            raise FMPException('Interval value is not valid',FMP.get_historical_chart.__name__)
+            raise FMPException('Interval value is not valid', FMP.get_historical_chart.__name__)
 
-    def get_historical_chart_index(self,interval,symbol):
+    def get_historical_chart_index(self,interval, symbol):
         return FMP.get_historical_chart(self, interval, str(INDEX_PREFIX)+symbol)
 
     @FMPDecorator.write_to_file
     @FMPDecorator.format_historical_data
-    def get_historical_price(self,symbol):
+    def get_historical_price(self, symbol):
         rb = RequestBuilder(self.api_key)
         rb.set_category('historical-price-full')
         rb.add_sub_category(symbol)
@@ -78,5 +78,5 @@ class FMP(object):
         hp = self.__do_request__(rb.compile_request())
         return hp
 
-    def __do_request__(self,url):
+    def __do_request__(self, url):
         return requests.get(url)

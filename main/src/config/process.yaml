@@ -30,7 +30,7 @@ technical_indicator_inputs:
 
 FC_processing_flags:
   country: US
-  ticker_list: ["HTH"]
+  ticker_list: all
 
 feature_creation_inputs:
   normalization_method: average
@@ -39,7 +39,7 @@ feature_creation_inputs:
   remove_correlated_variables: no
   historic_datapoint_for_pred: 45
   time_ahead_to_pred: 7
-  raw_columns_analysis: ["close", "volume", "changePercent", "vwap", "changeOverTime"]
+  columns_normalize: ["close", "volume", "vwap"]
 
 
 

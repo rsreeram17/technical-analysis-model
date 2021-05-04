@@ -2,6 +2,7 @@ import os
 from main.src.code.utils.sys_utils import read_config
 import pandas as pd
 import json
+import pickle
 
 def get_yaml_value(filename: str, key: str):
 
@@ -31,6 +32,13 @@ def create_lagged_features(df, columns, trailing_window = 1):
 
     return data_lagged
 
+def normalize_columns(df, columns):
+
+    for column in columns:
+        column_names = [col for col in df.columns if column in col]
+        data_frame_subset = df[column_names]
+        df[column] = df[column]/data_frame_subset.mean(axis=0)
+
 def cache_info(json_fname, key, value):
 
     opj = os.path.join
@@ -47,3 +55,20 @@ def cache_info(json_fname, key, value):
 
     with open(file_path, "w") as json_file:
         json.dump(data, json_file)
+
+def dump_pickle(path,obj):
+
+    file = open(path,"wb")
+    pickle.dump(obj,file)
+    file.close()
+
+def read_pickle(path):
+
+    file = open(path,"rb")
+    data = pickle.load(file)
+    return data
+
+
+
+
+

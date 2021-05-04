@@ -1,0 +1,15 @@
+mode: train
+
+features:
+  target_variable: "target_variable"
+  input: ["raw","ti","dts"] #Include other features like ti_lagged etc. here
+  historic_datapoint_for_pred: 45 #Enter number of days
+  raw_normalized_available: ["change", "changePercent"]
+
+train:
+  dateframe_start: '1/2/2017'
+  dateframe_end: '3/1/2021'
+
+
+
+

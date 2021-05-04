@@ -1,12 +1,13 @@
 import pandas as pd
 import os
 from os import walk
+from tqdm import tqdm
+import numpy as np
 import pandas_ta as ta
 from main.src.code.utils.sys_utils import read_config
 from main.src.code.utils.utils import extract_folder_path,\
     get_yaml_value, create_lagged_features, cache_info
-from tqdm import tqdm
-import numpy as np
+
 
 class BuildFeatures(object):
 
@@ -28,7 +29,7 @@ class BuildFeatures(object):
                       'STOCHd_14_3_3', 'MACDh_12_26_9', 'CCI_14_0.015']
 
         self.raw_columns_analysis = get_yaml_value(
-            "process", "feature_creation_inputs.raw_columns_analysis")
+            "process", "feature_creation_inputs.columns_normalize")
 
         if self.ticker_list == "all":
             _, _, self.filenames = next(walk(self.data_path))
@@ -46,10 +47,20 @@ class BuildFeatures(object):
     def create_lagged_raw(self, data):
 
         historic_datapoint_for_pred = get_yaml_value(
-            "process", "feature_creation_inputs.historic_datapoint_for_pred")
+            "process", "feature_creation_inputs.normalization_tf")
         data_raw_lagged = create_lagged_features(
             data, self.raw_columns_analysis, historic_datapoint_for_pred)
         return data_raw_lagged
+
+    def normalize_columns(self, data, columns):
+
+        for column in columns:
+            column_names = [col for col in data.columns if column in col]
+            data_frame_subset = data[column_names]
+            column_mean = data_frame_subset.mean(axis=1)
+            data[column] = data[column] / column_mean
+
+        return data
 
     def create_target_variable(self, data):
 
@@ -62,8 +73,8 @@ class BuildFeatures(object):
 
         data_tv = pd.concat((data, shifted), axis=1)
         lag_column = self.column_name+"_lag"
-        data_tv["target_variable"] = (data_tv[self.column_name] -
-                                   data_tv[lag_column])/data_tv[lag_column]
+        data_tv["target_variable"] = (data_tv[lag_column] -
+                                   data_tv[self.column_name])/data_tv[self.column_name]
 
         return data_tv
 
@@ -102,7 +113,6 @@ class BuildFeatures(object):
                 data_ti_columns = set(data_ticker.columns)
 
                 data_ticker = self.create_lagged_raw(data_ticker)
-                data_raw_lagged = set(data_ticker.columns)
 
                 data_ticker = self.create_lagged_ti(data_ticker)
                 data_ti_lagged = set(data_ticker.columns)
@@ -110,24 +120,27 @@ class BuildFeatures(object):
                 data_ticker = self.create_dts(data_ticker)
                 data_dts = set(data_ticker.columns)
 
+                data_ticker.sort_values(by="date", inplace=True, ascending=False)
                 data_ticker = self.create_target_variable(data_ticker)
-                data_ticker["ticker"] = ticker
+                data_ticker.sort_values(by="date", inplace=True)
 
+                data_ticker = self.normalize_columns(
+                    data_ticker, self.raw_columns_analysis + ["SMA_20", "FWMA_20"])
+
+                data_ticker["ticker"] = ticker
+                #data_ticker.to_csv("test.csv")
                 if len(combined_df) == 0:
                     combined_df = data_ticker
                 else:
                     combined_df = pd.concat((combined_df, data_ticker))
 
             dts_data_columns = list(data_dts - data_ti_lagged)
-            ti_lagged_data_columns = list(data_ti_lagged - data_raw_lagged)
-            raw_lagged_data_columns = list(data_raw_lagged - data_ti_columns)
 
-            keys = [
-                "raw_lagged_data_columns", "ti_lagged_data_columns", "dts_data_columns"]
+            keys = "dts_data_columns"
 
-            cache_info("variables_info.json", keys, [raw_lagged_data_columns,
-                                                     ti_lagged_data_columns,
-                                                     dts_data_columns])
+            cache_info("variables_info.json", keys, dts_data_columns)
+            combined_df = combined_df[list(data_ti_columns) +
+                                      dts_data_columns + ["ticker"] + ["target_variable"]]
 
             data_write_path = self.opj(
                 extract_folder_path('features'), "data_features.csv")

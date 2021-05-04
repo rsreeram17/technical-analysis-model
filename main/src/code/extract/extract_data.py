@@ -4,6 +4,7 @@ from main.src.code.utils.fmp_python.fmp import FMP
 from main.src.code.utils.sys_utils import read_config
 from main.src.code.utils.utils import extract_folder_path, get_yaml_value, cache_info
 from tqdm import tqdm
+
 def extract_tickers():
 
     opj = os.path.join

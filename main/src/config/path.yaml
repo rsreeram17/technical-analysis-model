@@ -5,6 +5,7 @@ windows:
   daily_price: main\data\input\FMP_API_data\daily_price\
   process_daily_price: main\data\output\FMP_API_data\daily_price\
   features: main\data\output\features\
+  model_data: main\data\output\model_data\
   cache: main\data\cache\
 
 linux:
@@ -14,6 +15,7 @@ linux:
   daily_price: main/data/input/FMP_API_data/daily_price
   process_daily_price: main/data/output/FMP_API_data/daily_price/
   features: main/data/output/features/
+  model_data: main/data/output/model_data/
   cache: main/data/cache/
 
 

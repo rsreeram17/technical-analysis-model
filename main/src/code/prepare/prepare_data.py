@@ -12,8 +12,8 @@ class PrepareData(object):
         self.mode = get_yaml_value("model", "mode")
         self.opj = os.path.join
 
-        self.feature_data_path = self.opj(extract_folder_path("features"),
-                                     "data_features.csv")
+        self.feature_data_path = self.opj(
+            extract_folder_path("features"), "data_features.csv")
         variables_info_path = self.opj(extract_folder_path("cache"),
                                        "variables_info.json")
 
@@ -22,9 +22,11 @@ class PrepareData(object):
         var_info_file = open(variables_info_path)
         self.variables_info = json.load(var_info_file)
 
+        self.date_feature = get_yaml_value("process", "variable_names.date")
+
         if self.mode == "train":
 
-            self.ticker_date_fname = "ticker_date_train.pkl"
+            self.ticker_date_fname = "ticker_date_train_val.pkl"
             self.clean_data_name = "data_train.csv"
 
             raw_data_features = get_yaml_value("process",
@@ -34,8 +36,6 @@ class PrepareData(object):
 
             ti_features = self.variables_info["technical_indicator_data_columns"]
             dts_features = self.variables_info["dts_data_columns"]
-
-            self.date_feature = get_yaml_value("process", "variable_names.date")
 
             self.subset_feature = [self.date_feature] + ["ticker"] + raw_data_features\
                              + ti_features + dts_features + ["target_variable"]
